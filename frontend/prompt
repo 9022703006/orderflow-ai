@@ -1,0 +1,386 @@
+Build a SIMPLE React frontend for my project "OrderFlow AI".
+
+IMPORTANT:
+- This is an interview/demo project.
+- Keep the code VERY SIMPLE.
+- I must be able to explain every line to an interviewer.
+- Do not over-engineer.
+- Do not use Redux, Axios, Context API, TypeScript, custom hooks, complex authentication libraries, or unnecessary components.
+- Use only React, JavaScript, React Router, fetch, and simple CSS.
+- Do not build Spring Boot, PostgreSQL, or n8n yet.
+- Use mock data for now.
+
+==================================================
+PAGES
+==================================================
+
+Create only these pages:
+
+1. Login
+2. Register
+3. Verify OTP
+4. Dashboard
+5. Create Order
+6. Orders
+
+==================================================
+1. LOGIN
+==================================================
+
+Create a very simple Login.jsx.
+
+Use useState:
+
+const [email, setEmail] = useState("");
+
+Form:
+
+Email
+[input]
+
+[Send OTP]
+
+Use:
+
+onChange
+
+onSubmit
+
+Basic validation:
+
+if (!email) {
+    alert("Please enter email");
+    return;
+}
+
+For now, clicking Send OTP should navigate to:
+
+/verify-otp
+
+Pass the email to the OTP page in a simple way.
+
+Keep the code easy to understand.
+
+==================================================
+2. REGISTER
+==================================================
+
+Create a very simple Register.jsx.
+
+Use:
+
+const [name, setName] = useState("");
+const [email, setEmail] = useState("");
+
+Form:
+
+Name
+[input]
+
+Email
+[input]
+
+[Register]
+
+Validation:
+
+if (!name) {
+    alert("Please enter name");
+    return;
+}
+
+if (!email) {
+    alert("Please enter email");
+    return;
+}
+
+After submit:
+
+navigate("/verify-otp");
+
+Do not add complicated validation.
+
+==================================================
+3. OTP
+==================================================
+
+Create VerifyOtp.jsx.
+
+Use:
+
+const [otp, setOtp] = useState("");
+
+Input:
+
+OTP
+
+[Verify OTP]
+
+For mock testing:
+
+if (otp === "123456") {
+    navigate("/dashboard");
+} else {
+    alert("Invalid OTP");
+}
+
+Also add:
+
+[Resend OTP]
+
+For now, Resend OTP only displays:
+
+alert("OTP sent again");
+
+Do not implement real email yet.
+
+==================================================
+4. DASHBOARD
+==================================================
+
+Very simple page.
+
+Navbar:
+
+OrderFlow AI
+
+Home | Create Order | Orders | Logout
+
+Content:
+
+Welcome to OrderFlow AI
+
+AI-powered order automation.
+
+Three simple cards:
+
+Total Orders
+10
+
+Completed
+8
+
+Pending
+2
+
+Button:
+
+Create Order
+
+==================================================
+5. CREATE ORDER
+==================================================
+
+CreateOrder.jsx.
+
+Use useState:
+
+const [name, setName] = useState("");
+const [product, setProduct] = useState("");
+const [quantity, setQuantity] = useState("");
+const [price, setPrice] = useState("");
+
+Form:
+
+Customer Name
+Product
+Quantity
+Price
+
+Calculate:
+
+const total = quantity * price;
+
+Show:
+
+Total: ₹900000
+
+Button:
+
+Create Order
+
+After submit:
+
+alert("Order created successfully");
+
+Keep this code very simple.
+
+==================================================
+6. AI ORDER SECTION
+==================================================
+
+Below the normal form add:
+
+Ask OrderFlow AI
+
+<textarea
+    placeholder="Create an order for Rahul, 2 tractors at 450000 each"
+/>
+
+<button>
+    Process with AI
+</button>
+
+For now:
+
+alert("AI processing started");
+
+Do NOT implement actual AI yet.
+
+We will connect this later to:
+
+React
+↓
+Spring Boot
+↓
+n8n
+↓
+Gemini AI Agent
+
+==================================================
+7. ORDERS
+==================================================
+
+Create Orders.jsx.
+
+Use a simple JavaScript array:
+
+const orders = [
+    {
+        id: 1,
+        customer: "Rahul",
+        product: "Tractor",
+        quantity: 2,
+        total: 900000,
+        status: "Completed"
+    },
+    {
+        id: 2,
+        customer: "Amit",
+        product: "Tractor",
+        quantity: 1,
+        total: 450000,
+        status: "Pending"
+    }
+];
+
+Display using:
+
+orders.map()
+
+Create a simple table.
+
+==================================================
+8. ROUTING
+==================================================
+
+Use React Router only.
+
+Routes:
+
+/login
+/register
+/verify-otp
+/dashboard
+/create-order
+/orders
+
+Start application at:
+
+/login
+
+==================================================
+9. CODE STYLE
+==================================================
+
+VERY IMPORTANT:
+
+Write beginner-friendly code.
+
+Prefer:
+
+useState
+useNavigate
+simple functions
+simple if conditions
+simple JSX
+simple CSS
+
+Avoid:
+
+Redux
+Context API
+custom hooks
+Axios
+TypeScript
+complex folder architecture
+advanced JavaScript
+advanced React patterns
+unnecessary abstractions
+
+==================================================
+10. FUTURE API
+==================================================
+
+Do NOT connect APIs yet.
+
+Later we will connect:
+
+React
+↓
+Spring Boot REST API
+↓
+n8n Webhook
+↓
+AI Agent
+↓
+PostgreSQL
+↓
+Excel
+↓
+Gmail
+
+For now everything should work with mock/frontend data.
+
+==================================================
+11. FINAL TEST
+==================================================
+
+Test this flow:
+
+Login
+↓
+Enter email
+↓
+Send OTP
+↓
+Enter 123456
+↓
+Dashboard
+↓
+Create Order
+↓
+Orders
+
+Also test:
+
+Register
+↓
+Name + Email
+↓
+OTP
+↓
+123456
+↓
+Dashboard
+
+Make sure there are no console errors.
+
+At the end provide:
+
+1. Files created
+2. Routes
+3. How to run
+4. Short explanation of each page
+
+STOP after completing the simple React frontend.

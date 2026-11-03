@@ -1,0 +1,965 @@
+# Build SIMPLE Spring Boot Backend for "OrderFlow AI"
+
+## IMPORTANT
+
+This is an interview/demo project.
+
+The backend code must be VERY SIMPLE.
+
+I must be able to explain every important line to an interviewer.
+
+Do NOT over-engineer the project.
+
+Use simple:
+
+* Spring Boot
+* Java 17
+* Spring Web
+* Spring Data JPA
+* PostgreSQL
+* Spring Boot Mail
+* Bean Validation
+* Maven
+
+Do NOT use:
+
+* Spring Security
+* JWT
+* OAuth
+* Redux
+* Complex authentication
+* Microservices
+* Docker
+* Kafka
+* Redis
+* Lombok unless absolutely necessary
+* Complex design patterns
+* Interfaces everywhere without a reason
+* Complex exception handling
+* Custom frameworks
+
+Use normal Java classes, constructors, fields, getters and setters.
+
+==================================================
+PROJECT
+=======
+
+Project name:
+
+orderflow-ai-backend
+
+Package:
+
+com.orderflowai
+
+Java:
+
+17
+
+Application name:
+
+OrderFlow AI
+
+==================================================
+DATABASE
+========
+
+Use PostgreSQL.
+
+Database name:
+
+orderflow_ai
+
+Use Spring Data JPA.
+
+Create these tables:
+
+1. users
+2. orders
+
+Keep the database structure simple.
+
+==================================================
+PACKAGE STRUCTURE
+=================
+
+Use this structure:
+
+src/main/java/com/orderflowai
+
+```
+OrderFlowAiApplication.java
+
+controller
+    AuthController.java
+    OrderController.java
+
+service
+    AuthService.java
+    OrderService.java
+    EmailService.java
+
+repository
+    UserRepository.java
+    OrderRepository.java
+
+entity
+    User.java
+    Order.java
+
+dto
+    RegisterRequest.java
+    LoginRequest.java
+    VerifyOtpRequest.java
+    CreateOrderRequest.java
+
+config
+    CorsConfig.java
+```
+
+Do not create unnecessary packages.
+
+==================================================
+
+1. USER ENTITY
+   ==================================================
+
+Create:
+
+User.java
+
+Fields:
+
+id
+name
+email
+otp
+
+Use:
+
+@Entity
+
+Use a simple generated ID.
+
+Example:
+
+Long id
+
+Store:
+
+name
+email
+otp
+
+Keep it simple.
+
+Do not add password authentication.
+
+Do not add Spring Security.
+
+==================================================
+2. ORDER ENTITY
+===============
+
+Create:
+
+Order.java
+
+Fields:
+
+id
+customerName
+customerEmail
+product
+quantity
+price
+total
+status
+
+Use:
+
+@Entity
+
+ID should be generated automatically.
+
+Keep the entity simple.
+
+==================================================
+3. USER REPOSITORY
+==================
+
+Create:
+
+UserRepository.java
+
+Extend:
+
+JpaRepository<User, Long>
+
+Add a simple method:
+
+Optional<User> findByEmail(String email);
+
+Do not add unnecessary repository methods.
+
+==================================================
+4. ORDER REPOSITORY
+===================
+
+Create:
+
+OrderRepository.java
+
+Extend:
+
+JpaRepository<Order, Long>
+
+No unnecessary methods for now.
+
+==================================================
+5. REGISTER DTO
+===============
+
+Create:
+
+RegisterRequest.java
+
+Fields:
+
+name
+email
+
+Use simple validation:
+
+@NotBlank
+
+Do not add complicated validation.
+
+==================================================
+6. LOGIN DTO
+============
+
+Create:
+
+LoginRequest.java
+
+Field:
+
+email
+
+Use simple validation.
+
+==================================================
+7. VERIFY OTP DTO
+=================
+
+Create:
+
+VerifyOtpRequest.java
+
+Fields:
+
+email
+otp
+
+Keep it simple.
+
+==================================================
+8. CREATE ORDER DTO
+===================
+
+Create:
+
+CreateOrderRequest.java
+
+Fields:
+
+customerName
+customerEmail
+product
+quantity
+price
+
+Do not put business logic inside the DTO.
+
+==================================================
+9. EMAIL SERVICE
+================
+
+Create:
+
+EmailService.java
+
+Use:
+
+JavaMailSender
+
+SMTP will be used to send emails.
+
+Create a simple method:
+
+sendOtpEmail(String email, String otp)
+
+The email should contain:
+
+OrderFlow AI
+
+Your OTP is: 123456
+
+Do not build HTML email templates.
+
+Use a simple text email.
+
+Also create:
+
+sendOrderConfirmationEmail(...)
+
+This sends a simple order confirmation email.
+
+==================================================
+10. AUTH SERVICE
+================
+
+Create:
+
+AuthService.java
+
+Implement these simple operations:
+
+1. Register user
+2. Send OTP
+3. Verify OTP
+4. Login/send OTP
+
+REGISTER:
+
+Input:
+
+name
+email
+
+Check whether the email already exists.
+
+If it does not exist:
+
+Save the user.
+
+Generate a simple 6-digit OTP.
+
+Save OTP.
+
+Send OTP using EmailService.
+
+Return a simple success message.
+
+Do not implement password authentication.
+
+==================================================
+OTP
+===
+
+Generate a 6-digit OTP.
+
+For development/testing, also allow:
+
+123456
+
+to work as the demo OTP if necessary.
+
+When the OTP is correct:
+
+Return:
+
+"OTP verified successfully"
+
+If incorrect:
+
+Return:
+
+"Invalid OTP"
+
+Keep this logic very easy to understand.
+
+==================================================
+11. AUTH CONTROLLER
+===================
+
+Create:
+
+AuthController.java
+
+Use:
+
+@RestController
+
+Base path:
+
+/api/auth
+
+Create these endpoints:
+
+POST /api/auth/register
+
+POST /api/auth/login
+
+POST /api/auth/verify-otp
+
+POST /api/auth/resend-otp
+
+==================================================
+REGISTER
+========
+
+Endpoint:
+
+POST /api/auth/register
+
+Request:
+
+{
+"name": "Rahul",
+"email": "[rahul@gmail.com](mailto:rahul@gmail.com)"
+}
+
+Call:
+
+AuthService
+
+Return a simple response.
+
+Example:
+
+{
+"message": "OTP sent successfully"
+}
+
+==================================================
+LOGIN
+=====
+
+Endpoint:
+
+POST /api/auth/login
+
+Request:
+
+{
+"email": "[rahul@gmail.com](mailto:rahul@gmail.com)"
+}
+
+Generate OTP.
+
+Send OTP using SMTP.
+
+Return:
+
+{
+"message": "OTP sent successfully"
+}
+
+==================================================
+VERIFY OTP
+==========
+
+Endpoint:
+
+POST /api/auth/verify-otp
+
+Request:
+
+{
+"email": "[rahul@gmail.com](mailto:rahul@gmail.com)",
+"otp": "123456"
+}
+
+Return a simple success/error message.
+
+Do NOT create JWT.
+
+Do NOT create a security token.
+
+==================================================
+RESEND OTP
+==========
+
+Endpoint:
+
+POST /api/auth/resend-otp
+
+Request:
+
+{
+"email": "[rahul@gmail.com](mailto:rahul@gmail.com)"
+}
+
+Generate another OTP.
+
+Send it using SMTP.
+
+Return:
+
+{
+"message": "OTP sent again"
+}
+
+==================================================
+12. ORDER SERVICE
+=================
+
+Create:
+
+OrderService.java
+
+Implement:
+
+Create order
+
+Get all orders
+
+When creating an order:
+
+Calculate:
+
+total = quantity * price
+
+Set:
+
+status = "Pending"
+
+Save the order in PostgreSQL.
+
+Then send a simple order confirmation email.
+
+Keep the logic straightforward.
+
+==================================================
+13. ORDER CONTROLLER
+====================
+
+Create:
+
+OrderController.java
+
+Base path:
+
+/api/orders
+
+Endpoints:
+
+POST /api/orders
+
+GET /api/orders
+
+==================================================
+CREATE ORDER
+============
+
+POST:
+
+/api/orders
+
+Request:
+
+{
+"customerName": "Rahul",
+"customerEmail": "[rahul@gmail.com](mailto:rahul@gmail.com)",
+"product": "Tractor",
+"quantity": 2,
+"price": 450000
+}
+
+Backend calculates:
+
+total = quantity * price
+
+Save:
+
+customerName
+customerEmail
+product
+quantity
+price
+total
+status
+
+Return the created order.
+
+==================================================
+GET ORDERS
+==========
+
+GET:
+
+/api/orders
+
+Return all orders.
+
+React will later use this endpoint to display the Orders page.
+
+==================================================
+14. CORS
+========
+
+Create:
+
+CorsConfig.java
+
+Allow the React frontend to call the backend.
+
+Frontend development URL:
+
+http://localhost:5173
+
+Allow:
+
+GET
+POST
+
+Allow:
+
+Content-Type
+
+Do not create complicated security configuration.
+
+==================================================
+15. APPLICATION PROPERTIES
+==========================
+
+Configure:
+
+PostgreSQL
+
+Example:
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/orderflow_ai
+
+spring.datasource.username=postgres
+
+spring.datasource.password=${DB_PASSWORD}
+
+JPA:
+
+spring.jpa.hibernate.ddl-auto=update
+
+spring.jpa.show-sql=true
+
+Server:
+
+server.port=8080
+
+==================================================
+16. SMTP
+========
+
+Use Spring Boot Mail.
+
+Gmail SMTP:
+
+spring.mail.host=smtp.gmail.com
+
+spring.mail.port=587
+
+spring.mail.username=${MAIL_USERNAME}
+
+spring.mail.password=${MAIL_PASSWORD}
+
+spring.mail.properties.mail.smtp.auth=true
+
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+IMPORTANT:
+
+Do NOT hardcode the Gmail password.
+
+Use environment variables.
+
+Do not commit passwords or app passwords.
+
+==================================================
+17. ERROR HANDLING
+==================
+
+Keep error handling simple.
+
+Use normal:
+
+try/catch
+
+only where necessary.
+
+For simple errors, return:
+
+{
+"message": "Invalid OTP"
+}
+
+Do not create a large global exception framework.
+
+==================================================
+18. API RESPONSE
+================
+
+Keep responses simple.
+
+Do not create unnecessary response wrapper classes.
+
+Simple String messages or normal objects are acceptable.
+
+==================================================
+19. DO NOT BUILD AI YET
+=======================
+
+VERY IMPORTANT.
+
+Do NOT implement:
+
+Gemini
+
+Spring AI
+
+OpenAI
+
+AI Agent
+
+n8n
+
+Webhook
+
+PostgreSQL AI tools
+
+Excel integration
+
+Gmail automation
+
+Those will be implemented later.
+
+For this step, Gmail is used ONLY through SMTP for:
+
+1. OTP email
+2. Order confirmation email
+
+==================================================
+20. DO NOT BUILD FRONTEND
+=========================
+
+The React frontend already exists.
+
+Do NOT recreate the React project.
+
+Do NOT modify:
+
+orderflow-ai-frontend
+
+Only work inside:
+
+orderflow-ai-backend
+
+==================================================
+21. API FLOW
+============
+
+Registration:
+
+React
+↓
+POST /api/auth/register
+↓
+AuthController
+↓
+AuthService
+↓
+UserRepository
+↓
+PostgreSQL
+↓
+EmailService
+↓
+SMTP
+↓
+User email
+
+Login:
+
+React
+↓
+POST /api/auth/login
+↓
+AuthController
+↓
+AuthService
+↓
+EmailService
+↓
+SMTP
+↓
+OTP email
+
+Order:
+
+React
+↓
+POST /api/orders
+↓
+OrderController
+↓
+OrderService
+↓
+OrderRepository
+↓
+PostgreSQL
+↓
+EmailService
+↓
+SMTP
+↓
+Order confirmation email
+
+==================================================
+22. FUTURE ARCHITECTURE
+=======================
+
+Do NOT implement this now.
+
+Later the complete system will be:
+
+React
+↓
+Spring Boot
+↓
+n8n Webhook
+↓
+Gemini AI Agent
+↓
+Validate Order
+↓
+PostgreSQL
+↓
+Excel
+↓
+Gmail
+
+For now only build:
+
+React
+↓
+Spring Boot
+↓
+PostgreSQL
+
+and SMTP email.
+
+==================================================
+23. TESTING
+===========
+
+After implementation:
+
+Run the Spring Boot application.
+
+Verify:
+
+1. Application starts successfully.
+
+2. PostgreSQL connection works.
+
+3. User can register.
+
+4. OTP is generated.
+
+5. OTP email is sent using SMTP.
+
+6. OTP can be verified.
+
+7. User can request another OTP.
+
+8. Order can be created.
+
+9. Order total is calculated correctly.
+
+Example:
+
+quantity = 2
+
+price = 450000
+
+total = 900000
+
+10. Order is saved in PostgreSQL.
+
+11. Order confirmation email is sent.
+
+12. GET /api/orders returns orders.
+
+Use Postman or another simple REST client for testing.
+
+==================================================
+24. CODE STYLE
+==============
+
+IMPORTANT:
+
+Keep every class small.
+
+Keep methods short.
+
+Use clear variable names.
+
+Use simple Java.
+
+Use normal if conditions.
+
+Use simple loops only when required.
+
+Do not use streams unless necessary.
+
+Do not use advanced Java features.
+
+Do not create unnecessary interfaces.
+
+Do not create unnecessary utility classes.
+
+Do not create unnecessary abstractions.
+
+The code should be easy for a fresher to explain.
+
+==================================================
+25. FINAL REPORT
+================
+
+After completing the backend, provide:
+
+1. Files created
+
+2. Package structure
+
+3. Dependencies used
+
+4. Database configuration
+
+5. API endpoints
+
+6. SMTP configuration
+
+7. How to run the backend
+
+8. How to test APIs in Postman
+
+9. Short explanation of each package
+
+10. Short explanation of the complete request flow
+
+11. Test results
+
+STOP after completing this backend.
+
+Do NOT start n8n.
+
+Do NOT start Gemini.
+
+Do NOT start AI Agent development.
+
+Do NOT build Excel automation.
+
+Do NOT build additional features.
+
+Only complete this Spring Boot backend.
