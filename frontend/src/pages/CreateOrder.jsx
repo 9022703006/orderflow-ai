@@ -23,7 +23,7 @@ function CreateOrder() {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/orders", {
+      const response = await fetch("https://orderflow-ai-ka4t.onrender.com/api/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
