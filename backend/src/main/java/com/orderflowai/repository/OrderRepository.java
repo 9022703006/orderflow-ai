@@ -12,4 +12,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
+    List<Order> findByCustomerEmail(String customerEmail);
+
+    List<Order> findByCustomerEmailAndCreatedAtBetween(String customerEmail, LocalDateTime start, LocalDateTime end);
 }

@@ -19,6 +19,7 @@ public class OrderService {
         this.orderRepository = orderRepository;
         this.emailService = emailService;
     }
+
     public Order createOrder(CreateOrderRequest request) {
         Order order = new Order();
         order.setCustomerName(request.getCustomerName());
@@ -31,7 +32,6 @@ public class OrderService {
         order.setTotal(total);
 
         order.setStatus("Pending");
-
         order.setCreatedAt(LocalDateTime.now());
 
         Order savedOrder = orderRepository.save(order);
@@ -45,10 +45,19 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
+    public List<Order> getOrdersForUser(String customerEmail) {
+        return orderRepository.findByCustomerEmail(customerEmail);
+    }
 
     public List<Order> getTodayOrders() {
         LocalDateTime start = LocalDate.now().atStartOfDay();
         LocalDateTime end = start.plusDays(1);
         return orderRepository.findByCreatedAtBetween(start, end);
+    }
+
+    public List<Order> getTodayOrdersForUser(String customerEmail) {
+        LocalDateTime start = LocalDate.now().atStartOfDay();
+        LocalDateTime end = start.plusDays(1);
+        return orderRepository.findByCustomerEmailAndCreatedAtBetween(customerEmail, start, end);
     }
 }

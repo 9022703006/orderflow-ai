@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -17,6 +18,9 @@ public class User {
     private String name;
     private String email;
     private String otp;
+    private LocalDateTime otpExpiry;
+    private String sessionToken;
+    private LocalDateTime tokenExpiry;
 
     public User() {
     }
@@ -25,6 +29,13 @@ public class User {
         this.name = name;
         this.email = email;
         this.otp = otp;
+    }
+
+    public User(String name, String email, String otp, LocalDateTime otpExpiry) {
+        this.name = name;
+        this.email = email;
+        this.otp = otp;
+        this.otpExpiry = otpExpiry;
     }
 
     public Long getId() {
@@ -57,5 +68,29 @@ public class User {
 
     public void setOtp(String otp) {
         this.otp = otp;
+    }
+
+    public LocalDateTime getOtpExpiry() {
+        return otpExpiry;
+    }
+
+    public void setOtpExpiry(LocalDateTime otpExpiry) {
+        this.otpExpiry = otpExpiry;
+    }
+
+    public String getSessionToken() {
+        return sessionToken;
+    }
+
+    public void setSessionToken(String sessionToken) {
+        this.sessionToken = sessionToken;
+    }
+
+    public LocalDateTime getTokenExpiry() {
+        return tokenExpiry;
+    }
+
+    public void setTokenExpiry(LocalDateTime tokenExpiry) {
+        this.tokenExpiry = tokenExpiry;
     }
 }

@@ -1,25 +1,42 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { API_BASE_URL } from "../config";
 
 function Orders() {
-  const orders = [
-    {
-      id: 1,
-      customer: "Rahul",
-      product: "Tractor",
-      quantity: 2,
-      total: 900000,
-      status: "Completed"
-    },
-    {
-      id: 2,
-      customer: "Amit",
-      product: "Tractor",
-      quantity: 1,
-      total: 450000,
-      status: "Pending"
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      navigate("/login");
+      return;
     }
-  ];
+
+    fetch(`${API_BASE_URL}/api/orders`, {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    })
+      .then((res) => {
+        if (res.status === 401) {
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("userEmail");
+          navigate("/login");
+          return null;
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (data && Array.isArray(data)) {
+          setOrders(data);
+        }
+      })
+      .catch((err) => console.error("Error fetching orders:", err))
+      .finally(() => setLoading(false));
+  }, [navigate]);
 
   return (
     <div className="page-container">
@@ -48,23 +65,46 @@ function Orders() {
                 </tr>
               </thead>
               <tbody>
-                {orders.map((order) => (
-                  <tr key={order.id}>
-                    <td className="order-id">#{order.id}</td>
-                    <td className="customer-cell">
-                      <div className="avatar-placeholder">{order.customer[0]}</div>
-                      <span>{order.customer}</span>
-                    </td>
-                    <td>{order.product}</td>
-                    <td>{order.quantity}</td>
-                    <td className="amount-cell">₹{order.total.toLocaleString("en-IN")}</td>
-                    <td>
-                      <span className={`status-badge status-${order.status.toLowerCase()}`}>
-                        {order.status}
-                      </span>
+                {loading ? (
+                  <tr>
+                    <td colSpan="6" style={{ textAlign: "center", padding: "20px" }}>
+                      Loading orders...
                     </td>
                   </tr>
-                ))}
+                ) : orders.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" style={{ textAlign: "center", padding: "20px" }}>
+                      No orders found.
+                    </td>
+                  </tr>
+                ) : (
+                  orders.map((order) => {
+                    const customerName = order.customerName || order.customer || "Customer";
+                    return (
+                      <tr key={order.id}>
+                        <td className="order-id">#{order.id}</td>
+                        <td className="customer-cell">
+                          <div className="avatar-placeholder">
+                            {customerName.charAt(0).toUpperCase()}
+                          </div>
+                          <span>{customerName}</span>
+                        </td>
+                        <td>{order.product}</td>
+                        <td>{order.quantity}</td>
+                        <td className="amount-cell">
+                          ₹{(order.total || 0).toLocaleString("en-IN")}
+                        </td>
+                        <td>
+                          <span
+                            className={`status-badge status-${(order.status || "pending").toLowerCase()}`}
+                          >
+                            {order.status || "Pending"}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>

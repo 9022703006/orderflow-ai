@@ -1,8 +1,11 @@
 
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { API_BASE_URL } from "../config";
 
 function CreateOrder() {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [product, setProduct] = useState("");
@@ -22,11 +25,19 @@ function CreateOrder() {
       return;
     }
 
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      alert("Please log in to create orders");
+      navigate("/login");
+      return;
+    }
+
     try {
-      const response = await fetch("https://orderflow-ai-ka4t.onrender.com/api/orders", {
+      const response = await fetch(`${API_BASE_URL}/api/orders`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
           customerName: name,
@@ -36,6 +47,14 @@ function CreateOrder() {
           price: Number(price)
         })
       });
+
+      if (response.status === 401) {
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userEmail");
+        alert("Session expired. Please log in again.");
+        navigate("/login");
+        return;
+      }
 
       const data = await response.json();
 

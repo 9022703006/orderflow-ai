@@ -1,45 +1,45 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-
-
+import { API_BASE_URL } from "../config";
 
 function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!name) {
+    if (!name.trim()) {
       alert("Please enter name");
       return;
     }
 
-    if (!email) {
+    if (!email.trim()) {
       alert("Please enter email");
       return;
     }
 
+    setLoading(true);
     try {
-      const response = await fetch("https://orderflow-ai-ka4t.onrender.com/api/auth/register", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          name: name,
-          email: email
+          name: name.trim(),
+          email: email.trim()
         })
       });
 
       const data = await response.json();
 
-      if (response.ok) {
+      if (response.ok && (data.success === "true" || data.message === "OTP sent successfully")) {
         alert(data.message || "OTP sent successfully");
-
         navigate("/verify-otp", {
-          state: { email: email }
+          state: { email: email.trim() }
         });
       } else {
         alert(data.message || "Registration failed");
@@ -47,6 +47,8 @@ function Register() {
     } catch (error) {
       console.error(error);
       alert("Unable to connect to backend");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -70,6 +72,7 @@ function Register() {
               placeholder="Your full name"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              disabled={loading}
             />
           </div>
 
@@ -81,11 +84,12 @@ function Register() {
               placeholder="name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
             />
           </div>
 
-          <button type="submit" className="btn btn-primary btn-block">
-            Register
+          <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
+            {loading ? "Registering..." : "Register"}
           </button>
         </form>
 
@@ -101,4 +105,5 @@ function Register() {
     </div>
   );
 }
+
 export default Register;
